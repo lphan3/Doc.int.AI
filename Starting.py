@@ -22,13 +22,6 @@ from azure.ai.documentintelligence.models import AnalyzeDocumentRequest
 # =============================================
 # AZURE CONFIGURATION
 # =============================================
-"""
-SECURITY NOTE:
-- Never commit API keys to version control
-- For production, use environment variables or Azure Key Vault
-- Rotate keys regularly
-- Consider implementing key management system
-"""
 
 # Azure Document Intelligence endpoint and key
 # Replace these with your actual values from Azure Portal
