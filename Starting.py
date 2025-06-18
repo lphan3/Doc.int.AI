@@ -32,23 +32,22 @@ SECURITY NOTE:
 
 # Azure Document Intelligence endpoint and key
 # Replace these with your actual values from Azure Portal
-endpoint = "YOUR_ENDPOINT_HERE"  # e.g., "https://your-resource.cognitiveservices.azure.com/"
-key = "YOUR_KEY_HERE"  # Your Azure Document Intelligence API key
+endpoint = "YOUR_ENDPOINT_HERE"
+key = "YOUR_KEY_HERE"
 
 # =============================================
 # SAMPLE DOCUMENT
 # =============================================
-# You can use either a URL or local file path
-# Option 1: URL to document
-formUrl = "YOUR_DOCUMENT_URL_HERE"  # e.g., "https://example.com/your-document.pdf"
-
-# Option 2: Local file path
-local_file_path = "YOUR_LOCAL_FILE_PATH_HERE"  # e.g., "documents/sample.pdf"
-
+# Using a sample PDF from Azure's GitHub repository
+# You can replace this with your own document URL
+formUrl = "https://raw.githubusercontent.com/Azure-Samples/cognitive-services-REST-api-samples/master/curl/form-recognizer/sample-layout.pdf"
+# Replace this path with your local file path
+#local_file_path = "path/to/your/document.pdf"
 # =============================================
 # CLIENT INITIALIZATION
 # =============================================
 # Create the Document Intelligence client
+# This client will be used for all API calls
 document_intelligence_client = DocumentIntelligenceClient(
     endpoint=endpoint, credential=AzureKeyCredential(key)
 )
@@ -57,22 +56,19 @@ document_intelligence_client = DocumentIntelligenceClient(
 # DOCUMENT ANALYSIS
 # =============================================
 # Start the document analysis process
-# For URL-based analysis:
+# - Uses "prebuilt-layout" model for general document analysis
+# - Returns a poller object for async operation
+# - The analysis is performed on the document at the specified URL
 poller = document_intelligence_client.begin_analyze_document(
     "prebuilt-layout", AnalyzeDocumentRequest(url_source=formUrl)
 )
-
-# For local file analysis:
-# with open(local_file_path, "rb") as f:
-#     poller = document_intelligence_client.begin_analyze_document(
-#         "prebuilt-layout", AnalyzeDocumentRequest(file=f)
-#     )
-
 result = poller.result()
 
 # =============================================
 # STYLE ANALYSIS
 # =============================================
+# Check if the document contains any handwritten content
+# This is useful for documents that might contain both printed and handwritten text
 for idx, style in enumerate(result.styles):
     print(
         "Document contains {} content".format(
@@ -83,6 +79,7 @@ for idx, style in enumerate(result.styles):
 # =============================================
 # PAGE CONTENT ANALYSIS
 # =============================================
+# Process each page in the document
 for page in result.pages:
     # Extract and print all text lines
     for line_idx, line in enumerate(page.lines):
@@ -105,6 +102,7 @@ for page in result.pages:
 # =============================================
 # TABLE ANALYSIS
 # =============================================
+# Process all tables in the document
 for table_idx, table in enumerate(result.tables):
     # Print table dimensions
     print(
@@ -123,4 +121,5 @@ for table_idx, table in enumerate(result.tables):
             )
         )
 
-print("----------------------------------------") 
+print("----------------------------------------")
+### This is for presentation purposes
